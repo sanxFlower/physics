@@ -75,14 +75,17 @@ def rich(slide, runs, x, y, w, h, size=20, color=INK, align=PP_ALIGN.LEFT, valig
     return box
 
 def title(slide, kicker, heading, page=None):
-    txt(slide, kicker.upper(), 0.6, 0.35, 3.7, 0.28, size=10, color=CYAN, bold=True)
-    txt(slide, heading, 0.6, 0.68, 11.5, 0.6, size=27, color=NAVY, bold=True)
-    line(slide, 0.6, 1.42, 12.7, 1.42, GRID, 1)
-    if page is not None: txt(slide, f'{page:02d}', 12.1, 0.42, 0.6, 0.3, size=10, color=MUTED, align=PP_ALIGN.RIGHT)
+    # 参考希沃课件：深蓝底、金色章节签、青绿色强调线
+    if page is not None:
+        rect(slide, 0.6, 0.28, 0.58, 0.62, ORANGE, ORANGE, True)
+        txt(slide, f'{page:02d}', 0.6, 0.48, 0.58, 0.22, size=12, color=WHITE, bold=True, align=PP_ALIGN.CENTER)
+    txt(slide, kicker.upper(), 1.38, 0.35, 4.5, 0.28, size=10, color=YELLOW, bold=True)
+    txt(slide, heading, 1.35, 0.67, 11.0, 0.6, size=27, color=WHITE, bold=True)
+    line(slide, 0.6, 1.42, 12.7, 1.42, RGBColor(67, 93, 128), 1)
 
 def footer(slide, text='第一章 运动的描述 · 1.2 时间和位移'):
-    line(slide, 0.6, 7.12, 12.7, 7.12, GRID, 1)
-    txt(slide, text, 0.6, 7.18, 8, 0.2, size=9, color=MUTED)
+    line(slide, 0.6, 7.12, 12.7, 7.12, RGBColor(67, 93, 128), 1)
+    txt(slide, text, 0.6, 7.18, 8, 0.2, size=9, color=RGBColor(180, 197, 215))
 
 def card(slide, x, y, w, h, heading, body='', accent=BLUE, icon=None):
     rect(slide, x, y, w, h, WHITE, GRID, True)
@@ -99,7 +102,7 @@ def add_image(slide, filename, x, y, w, h=None):
     p = os.path.join(ASSET, filename)
     if os.path.exists(p): slide.shapes.add_picture(p, Inches(x), Inches(y), width=Inches(w), height=Inches(h) if h else None)
 
-def new_slide(bg=WHITE):
+def new_slide(bg=NAVY):
     s = prs.slides.add_slide(prs.slide_layouts[6]); set_bg(s, bg); return s
 
 # 1 Cover
@@ -146,10 +149,10 @@ footer(s)
 
 # 4 moment vs interval
 s = new_slide(); title(s, '03 · 时间', '时刻是“点”，时间间隔是“线段”', 4)
-txt(s, '时间轴：箭头表示时间增大的方向', 0.85, 1.72, 5, 0.3, size=14, color=MUTED)
+txt(s, '时间轴：箭头表示时间增大的方向', 0.85, 1.72, 5, 0.3, size=14, color=RGBColor(190,205,220))
 line(s, 1.05, 3.1, 11.9, 3.1, NAVY, 2, end='triangle')
 for x, lab in [(1.3,'8:00'),(6.05,'8:45'),(10.8,'9:00')]:
-    line(s,x,2.86,x,3.34,NAVY,2); txt(s,lab,x-0.4,2.48,0.8,0.25,size=13,color=NAVY,bold=True,align=PP_ALIGN.CENTER)
+    line(s,x,2.86,x,3.34,NAVY,2); txt(s,lab,x-0.4,2.48,0.8,0.25,size=13,color=WHITE,bold=True,align=PP_ALIGN.CENTER)
     s.shapes.add_shape(MSO_SHAPE.OVAL, Inches(x-0.08), Inches(3.02), Inches(0.16), Inches(0.16)).fill.solid(); o=s.shapes[-1]; o.fill.fore_color.rgb=ORANGE; o.line.color.rgb=ORANGE
 line(s,1.3,3.8,6.05,3.8,ORANGE,8)
 txt(s,'8:00—8:45：45 min（时间间隔）',2.3,4.05,3.2,0.3,size=14,color=ORANGE,bold=True,align=PP_ALIGN.CENTER)
@@ -187,16 +190,19 @@ footer(s)
 
 # 7 route vs displacement
 s = new_slide(); title(s, '06 · 路程与位移', '路线可以不同，初末位置决定的位移只有一个', 7)
-txt(s,'北京',0.95,2.3,0.8,0.3,size=17,color=NAVY,bold=True,align=PP_ALIGN.CENTER)
-txt(s,'重庆',11.4,4.85,0.8,0.3,size=17,color=NAVY,bold=True,align=PP_ALIGN.CENTER)
-line(s,1.75,2.5,11.5,5.0,BLUE,3,end='triangle')
-line(s,1.75,2.5,4.0,1.75,ORANGE,3)
-line(s,4.0,1.75,11.5,5.0,ORANGE,3,end='triangle')
-line(s,1.75,2.5,5.0,5.7, GREEN,3)
-line(s,5.0,5.7,11.5,5.0, GREEN,3,end='triangle')
-txt(s,'直线距离 ≈ 1300 km',4.7,3.1,2.7,0.3,size=14,color=BLUE,bold=True,align=PP_ALIGN.CENTER)
-rect(s,1.0,6.0,5.1,0.55,RGBColor(236,247,255),RGBColor(190,220,240),True); txt(s,'位移 Δx：由初位置指向末位置，与路径无关',1.2,6.17,4.7,0.22,size=13,color=BLUE,bold=True,align=PP_ALIGN.CENTER)
-rect(s,6.55,6.0,5.1,0.55,RGBColor(255,246,236),RGBColor(246,217,184),True); txt(s,'路程 s：运动轨迹的长度，路径越绕通常越长',6.75,6.17,4.7,0.22,size=13,color=ORANGE,bold=True,align=PP_ALIGN.CENTER)
+rect(s,0.78,1.75,4.55,4.85,WHITE,GRID,True)
+add_image(s, 'route_map.jpg', 1.0, 1.98, 4.1, 3.95)
+txt(s,'教材路线图：北京 → 重庆',1.08,6.08,3.95,0.28,size=14,color=NAVY,bold=True,align=PP_ALIGN.CENTER)
+txt(s,'初位置',6.0,2.0,1.2,0.28,size=14,color=WHITE,bold=True,align=PP_ALIGN.CENTER)
+txt(s,'末位置',10.95,5.1,1.2,0.28,size=14,color=WHITE,bold=True,align=PP_ALIGN.CENTER)
+line(s,6.55,2.35,11.25,5.25,BLUE,3,end='triangle')
+line(s,6.55,2.35,8.15,1.85,ORANGE,3)
+line(s,8.15,1.85,11.25,5.25,ORANGE,3,end='triangle')
+line(s,6.55,2.35,8.85,5.75,GREEN,3)
+line(s,8.85,5.75,11.25,5.25,GREEN,3,end='triangle')
+txt(s,'位移 Δx',8.65,3.0,1.45,0.28,size=15,color=BLUE,bold=True,align=PP_ALIGN.CENTER)
+txt(s,'路程 s₁ / s₂',8.35,4.25,2.1,0.28,size=15,color=ORANGE,bold=True,align=PP_ALIGN.CENTER)
+rect(s,5.55,6.0,6.6,0.55,RGBColor(236,247,255),RGBColor(190,220,240),True); txt(s,'位移与路径无关；路程随路线改变，且 s ≥ |Δx|',5.8,6.16,6.1,0.22,size=13,color=BLUE,bold=True,align=PP_ALIGN.CENTER)
 footer(s)
 
 # 8 scalar/vector
@@ -267,10 +273,17 @@ footer(s)
 
 # 13 measurement overview
 s = new_slide(); title(s, '12 · 测量运动', '用“固定时间间隔 + 位置记录”捕捉运动', 13)
-card(s,0.85,1.85,3.55,3.9,'频闪照相','每秒闪光10次\n同一张照片留下多个位置\n\n时间间隔由频率决定',CYAN,'频')
-card(s,4.9,1.85,3.55,3.9,'电磁打点计时器','约8 V 交流\n振针 + 复写纸\n\n50 Hz → T=0.02 s',BLUE,'磁')
-card(s,8.95,1.85,3.55,3.9,'电火花计时器','220 V 交流\n电火花 + 墨粉纸\n\n50 Hz → T=0.02 s',ORANGE,'火')
-txt(s,'共同原理：相同时间间隔，在纸带上连续留下点迹，点间距离反映位移。',1.1,6.25,11.0,0.35,size=17,color=NAVY,bold=True,align=PP_ALIGN.CENTER)
+rect(s,0.85,1.75,4.1,4.95,WHITE,GRID,True)
+add_image(s, 'timer_devices.jpg', 1.02, 1.95, 3.75, 3.35)
+txt(s,'教材实物图：电磁 / 电火花打点计时器',1.06,5.48,3.66,0.42,size=13,color=NAVY,bold=True,align=PP_ALIGN.CENTER)
+rect(s,5.3,1.85,3.25,2.05,RGBColor(25,44,78),RGBColor(70,100,135),True)
+txt(s,'共同原理',5.58,2.18,2.7,0.3,size=18,color=YELLOW,bold=True,align=PP_ALIGN.CENTER)
+txt(s,'相同时间间隔\n连续留下点迹\n点间距离反映位移',5.58,2.75,2.7,0.8,size=15,color=WHITE,align=PP_ALIGN.CENTER)
+card(s,8.9,1.85,3.55,1.75,'电磁打点计时器','约8 V 交流 · 复写纸\n50 Hz → T=0.02 s',BLUE,'磁')
+card(s,8.9,3.95,3.55,1.75,'电火花计时器','220 V 交流 · 墨粉纸\n50 Hz → T=0.02 s',ORANGE,'火')
+rect(s,5.3,4.45,3.25,1.25,RGBColor(236,247,255),RGBColor(190,220,240),True)
+txt(s,'频闪照相：固定频率闪光，\n一张照片记录多个位置。',5.55,4.78,2.75,0.58,size=14,color=BLUE,bold=True,align=PP_ALIGN.CENTER)
+txt(s,'测量的核心：把“看不见的时间”变成“数得出的点”。',1.15,6.3,11.0,0.3,size=17,color=WHITE,bold=True,align=PP_ALIGN.CENTER)
 footer(s)
 
 # 14 timer comparison
@@ -291,14 +304,16 @@ footer(s)
 s = new_slide(); title(s, '14 · 纸带实验', '规范操作：先通电，再拉动', 15)
 steps=[('1','固定仪器','穿好纸带',BLUE),('2','安装纸带','压在复写纸/墨粉纸下',CYAN),('3','接通电源','稳定后水平拉动',ORANGE),('4','断电取带','选清晰点作起点',GREEN),('5','测量记录','尺量位移，表格记数据',RED)]
 for i,(n,h,b,c) in enumerate(steps):
-    x=0.75+i*2.45
+    x=0.5+i*2.45
     s.shapes.add_shape(MSO_SHAPE.OVAL, Inches(x+0.7), Inches(2.05), Inches(0.9), Inches(0.9)).fill.solid(); o=s.shapes[-1]; o.fill.fore_color.rgb=c; o.line.color.rgb=c
     txt(s,n,x+0.7,2.29,0.9,0.3,size=22,color=WHITE,bold=True,align=PP_ALIGN.CENTER)
     if i<4: line(s,x+1.6,2.5,x+2.25,2.5,GRID,3,end='triangle')
     txt(s,h,x+0.1,3.2,2.2,0.35,size=16,color=NAVY,bold=True,align=PP_ALIGN.CENTER)
     txt(s,b,x+0.1,3.72,2.2,0.65,size=13,color=INK,align=PP_ALIGN.CENTER)
-rect(s,1.15,5.25,11.0,0.9,RGBColor(255,247,247),RGBColor(245,200,200),True)
-txt(s,'关键提醒：电源应先接通再拉纸带；纸带要水平、点迹要清晰。',1.45,5.54,10.4,0.3,size=18,color=RED,bold=True,align=PP_ALIGN.CENTER)
+rect(s,9.15,4.55,3.25,0.9,WHITE,GRID,True)
+add_image(s, 'timer_operation.jpg', 9.28, 4.66, 2.98, 0.68)
+rect(s,1.15,5.75,11.0,0.88,RGBColor(255,247,247),RGBColor(245,200,200),True)
+txt(s,'关键提醒：电源应先接通再拉纸带；纸带要水平、点迹要清晰。',1.45,6.03,10.4,0.3,size=17,color=RED,bold=True,align=PP_ALIGN.CENTER)
 footer(s)
 
 # 16 counting points
@@ -328,7 +343,7 @@ for r in range(3):
     txt(s,str(r+1),3.0,y+0.18,1.85,0.2,size=13,color=INK,align=PP_ALIGN.CENTER)
     txt(s,f'{(r+1)*0.02:.2f}',5.05,y+0.18,1.75,0.2,size=13,color=INK,align=PP_ALIGN.CENTER)
 txt(s,'点迹模糊？',1.0,5.05,1.7,0.35,size=18,color=RED,bold=True)
-for i,t in enumerate(['电压过低','振针过高','纸带过松','纸带未压好']): bullet(s,t,2.8+(i%2)*4.5,4.98+(i//2)*0.62,3.6,size=14,accent=RED)
+for i,t in enumerate(['电压过低','振针过高','纸带过松','纸带未压好']): bullet(s,t,2.8+(i%2)*4.5,4.98+(i//2)*0.62,3.6,color=WHITE,size=14,accent=RED)
 footer(s)
 
 # 18 summary map
