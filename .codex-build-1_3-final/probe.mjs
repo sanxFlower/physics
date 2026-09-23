@@ -1,0 +1,10 @@
+import { FileBlob, PresentationFile } from "@oai/artifact-tool";
+const p = await PresentationFile.importPptx(await FileBlob.load("C:/Users/San/workspace/physics/高中物理/光谷二高/26级-高一/《考点同步解读 高中物理 必修 第一册 RJ（第4版）》图书配套PPT课件/正文/01-第一章 运动的描述/03-第3讲 位置变化快慢的描述——速度.pptx"));
+const s = p.slides.getItem(0);
+console.log('presentation', Object.keys(p));
+console.log('slides', Object.keys(p.slides), p.slides.items.length);
+console.log('slide', Object.keys(s), s.constructor.name);
+const a = p.slides.add();
+console.log('add', Object.keys(a), a.constructor.name, a.shapes && Object.keys(a.shapes));
+const i = p.slides.insert({ after: s });
+console.log('insert', Object.keys(i), i.constructor.name, i.shapes && Object.keys(i.shapes));
